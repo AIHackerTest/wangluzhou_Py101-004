@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block title %}天气查询系统{% endblock %}
+{% block body %}
+<script type=text/javascript>
+$(document).ready(function () {
+    $('.ui button').click(function () {
+      $("#result").empty()
+      var order;
+      if ($(this).attr('id')=='help'){
+        order = 'help';
+      } else if ($(this).attr('id')=='history') {
+        order = 'history';
+      } else {
+        order = $("#order").val()
+        // alert(order)
+      };
+      $.post($SCRIPT_ROOT + '/_get_weather_info', {
+        order: order,
+      }, function(data) {
+        if("error" in data.result){
+          $("#result").text(data.result.error);
+        } else if ("history" in data.result) {
+          d = data.result.history
+          for(var city in d) {
+            add_record(d[city])
+          }
+          // $("#result").text(data.result.history)
+        } else if ("help" in data.result) {
+          $("#result").text(data.result.help)
+        } else {
+          var city = data.result.city;
+          var description = data.result.description;
+          var temperature = data.result.temperature;
+          var update_time = data.result.update_time;
+          $("#result").append("<p>城市：" + city + "</p>");
+          $("#result").append("<p>天气：" + description + "</p>");
+          $("#result").append("<p>温度：" + temperature + "</p>");
+          $("#result").append("<p>更新时间：" + update_time + "</p>");
+        }
+      });
+      return false;
+    });
+});
+function add_record(d) {
+  var city = d.city;
+  var description = d.description;
+  var temperature = d.temperature;
+  var update_time = d.update_time;
+  $("#result").append("<p>城市：" + city + "</p>");
+  $("#result").append("<p>天气：" + description + "</p>");
+  $("#result").append("<p>温度：" + temperature + "</p>");
+  $("#result").append("<p>更新时间：" + update_time + "</p>");
+}
+</script>
+  <div class="ui top fixed borderless segment">
+    <div class="">
+      <h1 class="ui center aligned header">天气查询系统</h1>
+    </div>
+  </div>
+  <div class="ui segment fixed vertical basic">
+    <div class="ui basic segment second-level">
+      <div class="ui segment center aligned basic">
+        <div class="ui input">
+          <input id="order" type="text" placeholder="城市名称(中文或者拼音)">
+        </div>
+      </div>
+      <div class="ui three buttons">
+        <button class="ui button" id="order"><h4>查询</h4></button>
+        <button class="ui button" id="help"><h4>帮助</h4></button>
+        <button class="ui button" id="history"><h4>历史</h4></button>
+      </div>
+  </div>
+  <div class="ui container center aligned" id=result>
+  </div>
+{% endblock %}

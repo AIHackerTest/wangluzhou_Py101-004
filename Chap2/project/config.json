@@ -1,0 +1,14 @@
+{
+  "section1": {
+    "comment": "更新城市不需要重启城市",
+    "cities": ["上海", "杭州", "宁波"]
+  },
+  "section2": {
+    "comment": "更新时间需要重启程序，才有效",
+    "search_time": {
+      "hour": 20,
+      "minute": 26
+    },
+    "end_date": "2018-1-1"
+  }
+}
